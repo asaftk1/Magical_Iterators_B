@@ -10,17 +10,28 @@ namespace ariel
     {
     private:
         std::vector<int> elements; // Dynamic array to store the elements
-
-    public:
         std::vector<int *> primePointers;
+    public:
         int size();
         void addElement(int element);
         void removeElement(int element);
-        int getElement(std::size_t index) const;
+        MagicalContainer()  = default;
+        // Destructor
+        ~MagicalContainer()
+        {
+            // Clean up the primePointers vector
+            for (int *pointer : primePointers)
+            {
+                delete pointer;
+            }
+            primePointers.clear();
+        }
+        
         bool operator!=(const MagicalContainer &other) const
         {
             return elements != other.elements;
         }
+
         // AscendingIterator
         class AscendingIterator
         {
@@ -30,11 +41,12 @@ namespace ariel
 
         public:
             // Default constructor
+           
             // AscendingIterator(){}
-
-            // Copy constructor
             AscendingIterator(const MagicalContainer &cont)
                 : elements(cont), currentIndex(0) {}
+            // // Copy constructor
+            AscendingIterator(const AscendingIterator &other) : elements(other.elements), currentIndex(other.currentIndex) {}
 
             // Destructor
             ~AscendingIterator() {}
@@ -79,12 +91,10 @@ namespace ariel
             SideCrossIterator(const MagicalContainer &cont)
                 : elements(cont), currentIndex(0), forward(true) {}
 
+            // // Copy constructor
+            SideCrossIterator(const SideCrossIterator &other) : elements(other.elements), currentIndex(other.currentIndex), forward(other.forward) {}
             // // Default constructor
             // SideCrossIterator();
-
-            // // Copy constructor
-            // SideCrossIterator(const SideCrossIterator &other);
-
             // // Destructor
             // ~SideCrossIterator();
 
@@ -130,17 +140,13 @@ namespace ariel
                 : elements(cont), currentIndex(0)
             {
             }
-
+            // Constructor that used in the beging and and function.
             PrimeIterator(const MagicalContainer &container, std::vector<int *>::const_iterator iterator)
                 : elements(container), currentIndex(static_cast<typename std::vector<int>::size_type>(std::distance(container.primePointers.begin(), iterator)))
             {
             }
-
-            // Default constructor
-            // PrimeIterator();
-
             // // Copy constructor
-            // PrimeIterator(const PrimeIterator &other);
+            PrimeIterator(const PrimeIterator &other) : elements(other.elements), currentIndex(other.currentIndex) {}
 
             // // Destructor
             // ~PrimeIterator();
